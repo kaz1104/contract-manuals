@@ -35,7 +35,31 @@ var secArray_sorted = secArray.reverse(); // このままだとhtml挿入時に�
 
 // 配列の中身を使って、Sort用のHTMLパーツの生成
 $.each(secArray_sorted, function(i, val){
-  var chkbox = '<label for="'+i+'"><input id="'+i+'" type="checkbox">' + val + '</label>';
-  console.log(chkbox);
-  $("h1").after(chkbox);
+  // var chkbox = '<label for="'+i+'"><input id="'+i+'" type="checkbox">' + val + '</label>';
+  var filters = '<button class="filter__btn" id="'+i+'">' + val + '</button>';
+  // console.log(chkbox);
+  $("h1").after(filters);
+});
+
+
+// 上で作ったSort用のパーツへのアクションから、各セクションに対してClassの付与を行う
+$(".filter__btn").on("click", function(){
+  // ボタンをチェックボックス的に動かす為に、クリックごとにClassの付け外しをする。
+  if($(this).hasClass("checked")){
+    $(this).removeClass("checked");
+  } else {
+    $(this).addClass("checked");
+  }
+
+  var click_num = $(".filter__btn").index(this); // クリックしたボタンがFilter用のボタンの何番目にあるかを取得する。
+  var $filtered_h2 = $('h2:eq(' + click_num + ')'); // Filter用のボタンの順番と同じ順番のh2を指定する。h2を配列に入れているので、ここの順番は常に一致するはず。
+  var $filtered_section = $filtered_h2.parent(".chapter__wrapper"); // 上記で指定したh2の親要素を取りに行く
+
+  // 以下で条件分岐。クリック時にfilter対象のセクションに特定のクラスが存在しているかを確認する。これによって、必要な要素を出し分ける。
+  if($filtered_section.hasClass("test")){
+    $filtered_section.removeClass("test"); 
+  } else {
+    $filtered_section.addClass("test");
+  }
+  // $filtered_section.parent(".chapter__wrapper").addClass("test");
 });
