@@ -60,6 +60,5 @@ $(".filter__btn").on("click", function(){
     $filtered_section.removeClass("test"); 
   } else {
     $filtered_section.addClass("test");
-  }
-  // $filtered_section.parent(".chapter__wrapper").addClass("test");
+  };
 });
