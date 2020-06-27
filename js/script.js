@@ -26,6 +26,7 @@ $("h2").each(function(i){
   $(parent).find("h3").each(function(n){
     n=n+1;
     $(this).attr("id", "sub" + sectionID + "-" + n);
+    $(this).attr("class", "subSection")
   });
   var secHead = $(this).text()
   secArray.push(secHead);
@@ -56,9 +57,26 @@ $(".filter__btn").on("click", function(){
   var $filtered_section = $filtered_h2.parent(".chapter__wrapper"); // 上記で指定したh2の親要素を取りに行く
 
   // 以下で条件分岐。クリック時にfilter対象のセクションに特定のクラスが存在しているかを確認する。これによって、必要な要素を出し分ける。
-  if($filtered_section.hasClass("test")){
-    $filtered_section.removeClass("test"); 
+  if($filtered_section.hasClass("selected")){
+    $filtered_section.removeClass("selected");
+    $filtered_section.fadeIn(); 
   } else {
-    $filtered_section.addClass("test");
+    $filtered_section.addClass("selected");
+    $filtered_section.fadeOut();
   };
+});
+
+// コピーボタンの実装
+// コピーについてはテキストをクリックしたらコピーできるようにする。
+// CSSで該当のliのhoverやcursolやTransitionを入れて、それっぽく見せる。
+// クリップボードへのコピーはtextareaかinput を利用する必要があるので、今回はtextareaを使用。
+$(".article__wrapper ul ul ul > li").on("click", function(){
+  var copyText = $(this).text(); // クリックされた部分のテキストを取得
+  var $textarea = $('<textarea style="opacity: 0; height: 0; margin: 0; padding: 0;"></textarea>'); // textareaの定義。念の為、removeがうまく動作しない等あってもtextareaは見えないようにstyle設定。
+  $textarea.text(copyText); // textareaにcopyしたいテキストを挿入
+  $(this).append($textarea); // textareaを一時的にコピーしたいテキストの後に挿入。
+  $textarea.select(); // コピーのためにテキストを選択させる
+  document.execCommand("copy"); // jQuery側でクリップボードにコピーさせる。
+  $textarea.remove(); // コピーのためのtextareaをremoveする
+  // コピーしたことを知らせるメッセージは別途設定。
 });
