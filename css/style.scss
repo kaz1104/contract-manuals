@@ -1,0 +1,228 @@
+// Variable
+:root {
+--grandient: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+
+}
+$base-font: "Helvetica Neue", "Hiragino Sans", "Yu Gothic", "YuGothic", "Segoe UI", "Meiryo", sans-serif;
+$web-font: 'News Cycle', $base-font;
+$base-font-size: 1.4rem;
+$base-lineHeight: 1.8;
+$base-margin: $base-font-size*$base-lineHeight;
+$base-padding:$base-font-size*$base-lineHeight;
+$bg-color: #fafafa;
+$main-1: #0779e4;
+$main-2: #4cbbb9;
+$main-3: #77d8d8;
+$main-4: #eff3c6;
+
+// Common Styles
+html {
+  width: 100%;
+  height: 100%;
+  font-size: 62.5%;
+}
+
+body {
+  background-color: $bg-color;
+	font-family: $base-font;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+	color: #333;
+	height: 100%;
+}
+
+// Reset
+div, section, article,
+h1, h2, h3, h4, h5, h6,
+p, a, span, ul, ol, li, dd, dt, input, button,
+blockquote {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  text-decoration: none;
+  font-size: $base-font-size;
+  line-height: $base-lineHeight;
+  font-feature-settings: "palt";
+}
+
+// Head
+h1 {
+  font-family: 'Jaldi', $base-font;
+  $h1-size: $base-font-size * 1.4;
+  font-size: $h1-size;
+  letter-spacing: calc(#{$h1-size} * 0.1);
+  color: $main-1;
+  background: linear-gradient(90deg, $main-1, $main-2);
+  display: inline-block;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h2 {
+  $h2-size: $base-font-size * 1.4 * 1.4;
+  font-size: $h2-size;
+  letter-spacing: calc(#{$h2-size} * 0.05);
+}
+
+h3 {
+  $h3-size: $base-font-size * 1.4;
+  font-size: $h3-size;
+  letter-spacing: calc(#{$h3-size} * 0.05);
+}
+
+// Text
+p, a, li, span, button {
+  letter-spacing: calc(#{$base-font-size} * 0.05);
+}
+
+li {
+  list-style: none;
+}
+
+.secHead {
+  font-family: 'Jaldi', $base-font;
+  $secHead-size: $base-font-size * 1.4;
+  font-size: $secHead-size;
+  letter-spacing: calc(#{$secHead-size} * 0.1);
+  margin-bottom: $base-margin/2;
+}
+
+// Grid Setting
+.grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+// Header
+.header {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  padding: $base-padding/2 $base-padding;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+}
+
+// Filter Area
+.filter {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  border-right: 1px solid #f0f0f0;
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 100px);
+  padding: 0 $base-padding;
+  overflow-y: scroll;
+  // &__list {
+  //   position: sticky;
+  //   top: 100px;
+  //   height: calc(100vh - 100px);
+  //   padding: 0 $base-padding;
+  //   overflow-y: scroll;
+  // }
+  &__item {
+    user-select: none;
+    margin-bottom: $base-margin/2;
+    cursor: pointer;
+    color: #aaa;
+    transition: all .3s ease;
+    position: relative;
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: $main-1;
+      transform: scale(0, 1);
+      transform-origin: left top;
+      transition: transform .3s;
+    }
+    &:hover:after {
+      transform: scale(1, 1);
+    }
+  }
+  &-checked {
+    color: $main-1;
+    position: relative;
+    padding-left: 16px;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      left: 0;
+      width: 8px;
+      height: 4px;
+      border-left: 1px solid $main-1;
+      border-bottom: 1px solid $main-1;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+// Contents Area
+.contents {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  width: 80%;
+  margin: 0 auto;
+  padding: $base-padding/2 0;
+  & .secHead {
+    margin-left: -1.8rem;
+  }
+  & h2 {
+    padding-left: 1.4rem;
+    margin-left: -1.8rem;
+    position: relative;
+    &:before {
+      content: "";
+      width: 4px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background: linear-gradient(180deg, $main-1, $main-2);
+    }
+  }
+  & ul {
+    padding-left: $base-padding/2;
+  }
+  & ul ul ul li {
+    margin-bottom: $base-margin;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    margin-left: -($base-margin/2);
+    padding: $base-padding/2;
+    border: 2px solid transparent;
+    transition: all .3s ease;
+    position: relative;
+    box-sizing: border-box;
+    &:hover {
+      border: 2px solid;
+      border-image-slice: 1;
+      border-width: 2px;
+      border-image-source: linear-gradient(45deg, $main-1, $main-2);
+    }
+    &:after {
+      content: "Click to copy";
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      background: linear-gradient(180deg, $main-1, $main-2);
+      color: $bg-color;
+      padding: 0 $base-padding/2;
+      font-family: 'Jaldi', $base-font;
+      border-radius: 3px 3px 0 0;
+      opacity: 0;
+      transition: all .3s ease;
+    }
+    &:hover:after {
+      opacity: 1;
+    }
+  }
+}

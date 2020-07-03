@@ -1,3 +1,8 @@
+// CSSの準備
+$("style").remove();
+$("head").append('<link href="https://fonts.googleapis.com/css2?family=Jaldi:wght@400&display=swap" rel="stylesheet">');
+$("head").append('<link rel="stylesheet" href="./css/style.min.css">');
+
 // 章ごとにWrapする
 $("body").find("h2").each(function(){
   var $this = $(this); //nextUntilの中に入れるため
@@ -9,6 +14,10 @@ $(".chapter__wrapper").find("h3").each(function(){
   var $this = $(this); //nextUntilの中に入れるため
   $this.nextUntil($this.prop("tagName")).addBack().wrapAll("<section class='article__wrapper'></section>");
 });
+
+// Contents Area
+$(".chapter__wrapper").wrapAll('<section class="contents"></section>')
+$(".contents").prepend('<h4 class="secHead">Contents</h4>');
 
 // IDの振り直し
 $("h2").each(function(i){
@@ -37,31 +46,45 @@ var secArray_sorted = secArray.reverse(); // このままだとhtml挿入時に�
 // 配列の中身を使って、Sort用のHTMLパーツの生成
 $.each(secArray_sorted, function(i, val){
   // var chkbox = '<label for="'+i+'"><input id="'+i+'" type="checkbox">' + val + '</label>';
-  var filters = '<button class="filter__btn" id="'+i+'">' + val + '</button>';
+  var filters = '<li class="filter__item filter-checked" id="'+i+'">' + val + '</li>';
   // console.log(chkbox);
   $("h1").after(filters);
+  //$(filters).wrapAll('<ul class="filter__list"></ul>')
 });
 
+// Filter Area
+$(".filter__item").wrapAll('<section class="filter"><ul class="filter__list"></ul></section>');
+$(".filter").prepend('<h4 class="secHead">Filter</h4>');
+
+// 全選択ボタン(現時点のFilter判定に合わないため、一旦外す)
+// $(".filter__list").prepend('<li id="check_all" class="filter__item filter-checked">全てを選択する</li>');
+
+// h1をHeader内に入れる。
+$("h1").wrap('<header class="header"></header>');
+
+// HeaderとFilter AreaとContents AreaをWrapしてgridでコントロールできるようにする。
+$("header, .filter, .contents").wrapAll('<div class="grid"></div>');
 
 // 上で作ったSort用のパーツへのアクションから、各セクションに対してClassの付与を行う
-$(".filter__btn").on("click", function(){
+$(".filter__item").on("click", function(){
   // ボタンをチェックボックス的に動かす為に、クリックごとにClassの付け外しをする。
-  if($(this).hasClass("checked")){
-    $(this).removeClass("checked");
+  if($(this).hasClass("filter-checked")){
+    $(this).removeClass("filter-checked");
   } else {
-    $(this).addClass("checked");
+    $(this).addClass("filter-checked");
   }
 
-  var click_num = $(".filter__btn").index(this); // クリックしたボタンがFilter用のボタンの何番目にあるかを取得する。
+  var click_num = $(".filter__item").index(this); // クリックしたボタンがFilter用のボタンの何番目にあるかを取得する。
+  // var click_num = click_num - 1; // 全選択のボタンが入っている分、一つマイナスを入れる。ただし、全選択のボタンを現在検討中のため、一旦外す
   var $filtered_h2 = $('h2:eq(' + click_num + ')'); // Filter用のボタンの順番と同じ順番のh2を指定する。h2を配列に入れているので、ここの順番は常に一致するはず。
   var $filtered_section = $filtered_h2.parent(".chapter__wrapper"); // 上記で指定したh2の親要素を取りに行く
 
   // 以下で条件分岐。クリック時にfilter対象のセクションに特定のクラスが存在しているかを確認する。これによって、必要な要素を出し分ける。
-  if($filtered_section.hasClass("selected")){
-    $filtered_section.removeClass("selected");
+  if($filtered_section.hasClass("filtered")){
+    $filtered_section.removeClass("filtered");
     $filtered_section.fadeIn(); 
   } else {
-    $filtered_section.addClass("selected");
+    $filtered_section.addClass("filtered");
     $filtered_section.fadeOut();
   };
 });
@@ -80,3 +103,7 @@ $(".article__wrapper ul ul ul > li").on("click", function(){
   $textarea.remove(); // コピーのためのtextareaをremoveする
   // コピーしたことを知らせるメッセージは別途設定。
 });
+
+// nextUntilを使ってWrapしているせいで、scriptタグまでsection内に入ってしまうので外だし。
+$("#jquery").appendTo("body").removeAttr("id");
+$("#script").appendTo("body").removeAttr("id");
