@@ -6,7 +6,7 @@ $("head").append('<link rel="stylesheet" href="./css/style.min.css">');
 // 章ごとにWrapする
 $("body").find("h2").each(function(){
   var $this = $(this); //nextUntilの中に入れるため
-  $this.nextUntil($this.prop("tagName")).addBack().wrapAll("<section class='chapter__wrapper'></section>");
+  $this.nextUntil($this.prop("tagName")).addBack().wrapAll("<section class='chapter__wrapper displayed'></section>");
 });
 
 // Wrapされた章ごとの中で各条項をWrapする
@@ -57,7 +57,7 @@ $(".filter__item").wrapAll('<section class="filter"><ul class="filter__list"></u
 $(".filter").prepend('<h4 class="secHead">Filter</h4>');
 
 // 全選択ボタン(現時点のFilter判定に合わないため、一旦外す)
-// $(".filter__list").prepend('<li id="check_all" class="filter__item filter-checked">全てを選択する</li>');
+$(".filter__list").prepend('<li id="check_all" class="filter__item filter-checked">全てを選択する</li>');
 
 // h1をHeader内に入れる。
 $("h1").wrap('<header class="header"></header>');
@@ -66,7 +66,7 @@ $("h1").wrap('<header class="header"></header>');
 $("header, .filter, .contents").wrapAll('<div class="grid"></div>');
 
 // 上で作ったSort用のパーツへのアクションから、各セクションに対してClassの付与を行う
-$(".filter__item").on("click", function(){
+$(".filter__item").not("#check-all").on("click", function(){
   // ボタンをチェックボックス的に動かす為に、クリックごとにClassの付け外しをする。
   if($(this).hasClass("filter-checked")){
     $(this).removeClass("filter-checked");
@@ -74,20 +74,49 @@ $(".filter__item").on("click", function(){
     $(this).addClass("filter-checked");
   }
 
+  var filter_itemNum = $(".filter__item").not("#check_all").length;
+  var filtered_num = $(".filter-checked").not("#check_all").length;
+  // console.log(filter_itemNum);
+  // console.log(filtered_num);
+
+  if(filter_itemNum == filtered_num){
+    if(!$("#check_all").hasClass("filter-checked")){
+      $("#check_all").addClass("filter-checked");
+    }
+  } else if (filter_itemNum > filtered_num){
+    $("#check_all").removeClass("filter-checked");
+  }
+
   var click_num = $(".filter__item").index(this); // クリックしたボタンがFilter用のボタンの何番目にあるかを取得する。
-  // var click_num = click_num - 1; // 全選択のボタンが入っている分、一つマイナスを入れる。ただし、全選択のボタンを現在検討中のため、一旦外す
+  var click_num = click_num - 1; // 全選択のボタンが入っている分、一つマイナスを入れる。ただし、全選択のボタンを現在検討中のため、一旦外す
   var $filtered_h2 = $('h2:eq(' + click_num + ')'); // Filter用のボタンの順番と同じ順番のh2を指定する。h2を配列に入れているので、ここの順番は常に一致するはず。
   var $filtered_section = $filtered_h2.parent(".chapter__wrapper"); // 上記で指定したh2の親要素を取りに行く
 
   // 以下で条件分岐。クリック時にfilter対象のセクションに特定のクラスが存在しているかを確認する。これによって、必要な要素を出し分ける。
-  if($filtered_section.hasClass("filtered")){
+  if($filtered_section.hasClass("filtered") && !$filtered_section.hasClass("displayed")){
     $filtered_section.removeClass("filtered");
+    $filtered_section.addClass("displayed");
     $filtered_section.fadeIn(); 
-  } else {
+  } else if (!$filtered_section.hasClass("filtered") && $filtered_section.hasClass("displayed")){
     $filtered_section.addClass("filtered");
+    $filtered_section.removeClass("displayed");
     $filtered_section.fadeOut();
   };
 });
+
+$("#check_all").on("click", function(){
+  var filter_itemNum = $(".filter__item").not("#check_all").length;
+  var filtered_num = $(".filter-checked").not("#check_all").length;
+  if(filter_itemNum == filtered_num){
+    $(".filter__item").removeClass("filter-checked");
+    $(".chapter__wrapper").removeClass("displayed").addClass("filtered");
+    $(".chapter__wrapper").fadeOut();
+  } else {
+    $(".filter__item").addClass("filter-checked");
+    $(".chapter__wrapper").removeClass("filtered").addClass("displayed");
+    $(".chapter__wrapper").fadeIn();
+  }
+})
 
 // コピーボタンの実装
 // コピーについてはテキストをクリックしたらコピーできるようにする。
