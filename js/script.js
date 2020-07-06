@@ -131,6 +131,10 @@ $(".article__wrapper ul ul ul > li").on("click", function(){
   document.execCommand("copy"); // jQuery側でクリップボードにコピーさせる。
   $textarea.remove(); // コピーのためのtextareaをremoveする
   // コピーしたことを知らせるメッセージは別途設定。
+  $(this).addClass("copied");
+  $(this).delay(1000).queue(function(){
+    $(this).removeClass().dequeue();
+  });
 });
 
 // nextUntilを使ってWrapしているせいで、scriptタグまでsection内に入ってしまうので外だし。
